@@ -3,7 +3,6 @@ import { EventsService } from './events.service';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UsersGuard } from '../user/user.guards';
 import { Request, Response } from 'express';
-import { error } from 'console';
 import { ValidateDto } from './dto/validate.dto';
 
 @Controller('events')

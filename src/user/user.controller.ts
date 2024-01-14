@@ -15,6 +15,7 @@ import {
 import { UserService } from "./user.service";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { GetMealVouchersDto } from "./dto/get-meal-vouchers.dto";
 import { GetUserDto } from "./dto/get-user.dto";
 import { Response } from "express";
 import { UsersGuard } from "./user.guards";
@@ -99,8 +100,21 @@ export class UserController {
 
   @UseGuards(UsersGuard)
   @Get(':id/meal-vouchers/:month')
-  async getMealVouchers() {
+  async getMealVouchers(
+    @Param() { id, month }: GetMealVouchersDto,
+    @Res() res: Response,
+  ) {
+    const mealVouchers = await this.userService.getMealVouchers(id, month);
 
+    if ('error' in mealVouchers) {
+      if (mealVouchers.error === 'User not found') {
+        return res.status(HttpStatus.NOT_FOUND).send('User not found');
+      }
+      return res
+        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+        .send('Internal server error');
+    }
+    return res.status(HttpStatus.OK).json(mealVouchers);
   }
 
   @Get()
